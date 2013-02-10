@@ -173,10 +173,6 @@ class BaseVideo(Plugin):
 
     tvbus_cache = LRUCache(1)
 
-    def pre_cache(self, full_path):
-        if Video.video_file_filter(self, full_path):
-            transcode.supported_format(full_path)
-
     def video_file_filter(self, full_path, type=None):
         if os.path.isdir(unicode(full_path, 'utf-8')):
             return True
