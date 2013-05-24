@@ -19,7 +19,7 @@ Push from $escape($folders[0])
   #if len($folders) > 2
     #for $pos, $n in enumerate($folders[1:-1])
       #set $ppath = '/'.join($folders[:$pos + 2])
-<a href="/TiVoConnect?Command=QueryContainer&amp;Container=$quote($ppath)&amp;Format=text/html">/ $n</a>
+/ <a href="/TiVoConnect?Command=QueryContainer&amp;Container=$quote($ppath)&amp;Format=text/html">$n</a>
     #end for
   #end if
 / $escape($folders[-1])
