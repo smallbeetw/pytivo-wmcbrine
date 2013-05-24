@@ -121,6 +121,7 @@ class ToGo(Plugin):
             ItemStart = tag_data(xmldoc, 'TiVoContainer/ItemStart')
             ItemCount = tag_data(xmldoc, 'TiVoContainer/ItemCount')
             FirstAnchor = tag_data(items[0], 'Links/Content/Url')
+            title = tag_data(xmldoc, 'TiVoContainer/Details/Title')
 
             data = []
             for item in items:
@@ -175,6 +176,7 @@ class ToGo(Plugin):
             ItemStart = 0
             ItemCount = 0
             FirstAnchor = ''
+            title = ''
 
         t = Template(NPL_TEMPLATE, filter=EncodeUnicode)
         t.escape = escape
@@ -194,6 +196,7 @@ class ToGo(Plugin):
         t.ItemCount = int(ItemCount)
         t.FirstAnchor = quote(FirstAnchor)
         t.shows_per_page = shows_per_page
+        t.title = title
         handler.send_html(str(t), refresh='300')
 
     def get_tivo_file(self, tivoIP, url, mak, togo_path):

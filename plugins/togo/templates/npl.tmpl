@@ -7,7 +7,16 @@
 </head>
 <body>
 <form action="/TiVoConnect" method="POST">
-<p id="titlep"><span id="title">pyTivo - ToGo - $escape($tname)</span></p>
+<p id="titlep"><span id="title">
+<a href="/">pyTivo</a> /
+  #if $folder != ''
+<a href="/TiVoConnect?Command=NPL&amp;Container=$quote($container)&amp;TiVo=$tivoIP">
+  #end if
+Pull from $escape($tname)
+  #if $folder != ''
+</a> / $escape($title)
+  #end if
+</span></p>
 <table id="main">
   #if $ItemStart > 0
 	<tr><td colspan="5">
@@ -17,13 +26,6 @@
 	#end if
 	<a href="/TiVoConnect?Command=NPL&amp;Container=$quote($container)&amp;TiVo=$tivoIP&amp;AnchorItem=$FirstAnchor&amp;AnchorOffset=$Offset&amp;Folder=$folder">Previous Page</a>
 	</td></tr>
-  #end if
-  #if $folder != ''
-	## We are in a subfolder, offer the option to return to NPL
-	<tr>
-		<td><img src="/back.png" alt=""></td>
-		<td colspan=4><a href="/TiVoConnect?Command=NPL&amp;Container=$quote($container)&amp;TiVo=$tivoIP">Back to Now Playing List</a></td>
-	</tr>
   #end if
   #set $i = 0
   ## i variable is used to alternate colors of row
