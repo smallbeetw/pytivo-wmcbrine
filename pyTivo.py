@@ -76,4 +76,4 @@ def mainloop():
 
 if __name__ == '__main__':
     while mainloop():
-        time.sleep(5) 
+        time.sleep(5)
