@@ -28,12 +28,6 @@ BLOCKSIZE = 512 * 1024
 MAXBLOCKS = 2
 TIMEOUT = 600
 
-UNSET = 0
-OLD_PAD = 1
-NEW_PAD = 2
-
-pad_style = UNSET
-
 # XXX BIG HACK
 # subprocess is broken for me on windows so super hack
 def patchSubprocess():
@@ -373,22 +367,6 @@ def select_format(tsn, mime):
         fmt = 'vob'
     return '-f %s -' % fmt
 
-def pad_check():
-    global pad_style
-    if pad_style == UNSET:
-        pad_style = OLD_PAD
-        filters = tempfile.TemporaryFile()
-        cmd = [config.get_bin('ffmpeg'), '-filters']
-        ffmpeg = subprocess.Popen(cmd, stdout=filters, stderr=subprocess.PIPE)
-        ffmpeg.wait()
-        filters.seek(0)
-        for line in filters:
-            if line.startswith('pad'):
-                pad_style = NEW_PAD
-                break
-        filters.close()
-    return pad_style == NEW_PAD
-
 def pad_TB(TIVO_WIDTH, TIVO_HEIGHT, multiplier, vInfo):
     endHeight = int(((TIVO_WIDTH * vInfo['vHeight']) /
                       vInfo['vWidth']) * multiplier)
@@ -397,15 +375,8 @@ def pad_TB(TIVO_WIDTH, TIVO_HEIGHT, multiplier, vInfo):
     topPadding = (TIVO_HEIGHT - endHeight) / 2
     if topPadding % 2:
         topPadding -= 1
-    newpad = pad_check()
-    if newpad:
-        return ['-vf', 'scale=%d:%d,pad=%d:%d:0:%d' % (TIVO_WIDTH,
-                endHeight, TIVO_WIDTH, TIVO_HEIGHT, topPadding)]
-    else:
-        bottomPadding = (TIVO_HEIGHT - endHeight) - topPadding
-        return ['-s', '%sx%s' % (TIVO_WIDTH, endHeight),
-                '-padtop', str(topPadding),
-                '-padbottom', str(bottomPadding)]
+    return ['-vf', 'scale=%d:%d,pad=%d:%d:0:%d' % (TIVO_WIDTH,
+            endHeight, TIVO_WIDTH, TIVO_HEIGHT, topPadding)]
 
 def pad_LR(TIVO_WIDTH, TIVO_HEIGHT, multiplier, vInfo):
     endWidth = int((TIVO_HEIGHT * vInfo['vWidth']) /
@@ -415,15 +386,8 @@ def pad_LR(TIVO_WIDTH, TIVO_HEIGHT, multiplier, vInfo):
     leftPadding = (TIVO_WIDTH - endWidth) / 2
     if leftPadding % 2:
         leftPadding -= 1
-    newpad = pad_check()
-    if newpad:
-        return ['-vf', 'scale=%d:%d,pad=%d:%d:%d:0' % (endWidth,
-                TIVO_HEIGHT, TIVO_WIDTH, TIVO_HEIGHT, leftPadding)]
-    else:
-        rightPadding = (TIVO_WIDTH - endWidth) - leftPadding
-        return ['-s', '%sx%s' % (endWidth, TIVO_HEIGHT),
-                '-padleft', str(leftPadding),
-                '-padright', str(rightPadding)]
+    return ['-vf', 'scale=%d:%d,pad=%d:%d:%d:0' % (endWidth,
+            TIVO_HEIGHT, TIVO_WIDTH, TIVO_HEIGHT, leftPadding)]
 
 def select_aspect(inFile, tsn = ''):
     TIVO_WIDTH = config.getTivoWidth(tsn)
