@@ -128,6 +128,9 @@ Pull from $escape($tname)
  <input type="checkbox" name="decode">Decrypt with tivodecode<br>
 #end if
  <input type="checkbox" name="save">Save metadata to .txt<br>
+#if $togo_mpegts
+ <input type="checkbox" name="ts_format">Transfer as mpeg-ts<br>
+#end if
 </p>
 <p>
  <input value="Transfer Selected" type="submit">

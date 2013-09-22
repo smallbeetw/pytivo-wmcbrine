@@ -195,6 +195,7 @@ class ToGo(Plugin):
         if tivoIP in queue:
             t.queue = queue[tivoIP]
         t.has_tivodecode = has_tivodecode
+        t.togo_mpegts = config.is_ts_capable(tsn)
         t.tname = tivo_name
         t.tivoIP = tivoIP
         t.container = handler.cname
@@ -236,7 +237,10 @@ class ToGo(Plugin):
 
         auth_handler.add_password('TiVo DVR', url, 'tivo', mak)
         try:
-            handle = self.tivo_open(url)
+            if status[url]['ts_format']:
+                handle = self.tivo_open(url + '&Format=video/x-tivo-mpeg-ts')
+            else:
+                handle = self.tivo_open(url)
         except urllib2.HTTPError, e:
             status[url]['running'] = False
             status[url]['error'] = e.code
@@ -327,10 +331,12 @@ class ToGo(Plugin):
             urls = query.get('Url', [])
             decode = 'decode' in query
             save = 'save' in query
+            ts_format = 'ts_format' in query
             for theurl in urls:
                 status[theurl] = {'running': False, 'error': '', 'rate': '',
                                   'queued': True, 'size': 0, 'finished': False,
-                                  'decode': decode, 'save': save}
+                                  'decode': decode, 'save': save,
+                                  'ts_format': ts_format}
                 if tivoIP in queue:
                     queue[tivoIP].append(theurl)
                 else:
