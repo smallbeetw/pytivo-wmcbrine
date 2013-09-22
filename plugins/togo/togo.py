@@ -217,9 +217,16 @@ class ToGo(Plugin):
 
         name = unquote(parse_url[2])[10:].split('.')
         id = unquote(parse_url[4]).split('id=')[1]
-        name.insert(-1, ' - ' + id + '.')
+        ts = status[url]['ts_format']
+        name.insert(-1, ' - ' + id)
         if status[url]['decode']:
-            name[-1] = 'mpg'
+            if ts:
+                name[-1] = 'ts'
+            else:
+                name[-1] = 'mpg'
+        elif ts:
+            name.insert(-1, ' (TS)')
+        name.insert(-1, '.')
         outfile = os.path.join(togo_path, ''.join(name))
 
         if status[url]['save']:
