@@ -224,8 +224,11 @@ class ToGo(Plugin):
                 name[-1] = 'ts'
             else:
                 name[-1] = 'mpg'
-        elif ts:
-            name.insert(-1, ' (TS)')
+        else:
+            if ts:
+                name.insert(-1, ' (TS)')
+            else:
+                name.insert(-1, ' (PS)')
         name.insert(-1, '.')
         outfile = os.path.join(togo_path, ''.join(name))
 
