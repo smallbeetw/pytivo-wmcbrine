@@ -180,7 +180,7 @@ def getShares(tsn=''):
         for x in config.get(tsnsect, 'shares').split(','):
             y = x.strip()
             if config.has_section(y):
-                tsnshares.append((y, dict(config.items(y))))
+                tsnshares.append((y, Bdict(config.items(y))))
         shares = tsnshares
 
     shares.sort()
